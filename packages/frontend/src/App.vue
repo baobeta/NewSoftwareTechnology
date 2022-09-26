@@ -1,13 +1,11 @@
 <template>
-  <!-- <h1 class="text-lime-800 bg-red-900">
-    Hello world!
-  </h1> -->
-  <HelloWorld />
+  <div>
+    <HeaderMain />
+  </div>
 </template>
-  // This starter template is using Vue 3
 <script setup>
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import HelloWorld from './components/HelloWorld.vue';
+import HeaderMain from './components/Header.vue';
 </script>
 <style scoped>
 .logo {
