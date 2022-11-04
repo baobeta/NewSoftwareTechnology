@@ -11,7 +11,7 @@ const { mongoUrl } = require(path.join(__dirname, 'mongo_config.js'));
 
 // setup mongo
 mongoose.Promise = global.Promise;
-mongoose.connect(mongoUrl, { useNewUrlParser: true })
+mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('Connected MongoDB');
   })

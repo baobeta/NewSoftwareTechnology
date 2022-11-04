@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const UserSchema = new mongoose.Schema({
   firstName: { type: String },
   lastName: { type: String },
+  displayName: { type: String },
   email: { type: String },
   sex: {
     type: String,
@@ -10,7 +11,7 @@ const UserSchema = new mongoose.Schema({
     default: 'female',
   },
   code: { type: String },
-
+  googleId: { type: String },
 });
 
 UserSchema.index(

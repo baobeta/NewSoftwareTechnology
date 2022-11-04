@@ -1,6 +1,8 @@
+/* eslint-disable consistent-return */
+const passport = require('passport');
 const {
   index,
-  loginWithEmail,
+  // loginWithEmail,
 } = require('../controller/user.controller');
 
 const router = (app) => {
@@ -11,7 +13,24 @@ const router = (app) => {
       message: 'api ok',
     });
   });
-  app.post('/v1/login', loginWithEmail);
+  // app.post('/v1/login', loginWithEmail);
+  app.get(
+    '/v1/login/google',
+    passport.authenticate('google', { scope: ['profile', 'email'] }),
+  );
+  app.get(
+    '/v1/login/google/callback',
+    passport.authenticate('google', { failureRedirect: '/err' }),
+    (req, res) => {
+      res.redirect('/log');
+    },
+  );
+  app.get('/logout', (req, res, next) => {
+    req.logout((err) => {
+      if (err) { return next(err); }
+      res.redirect('/');
+    });
+  });
 };
 
 module.exports = router;
