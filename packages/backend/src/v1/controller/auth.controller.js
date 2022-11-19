@@ -27,7 +27,6 @@ async function verifyToken(token) {
 }
 
 async function validateEmail(email, hd) {
-  console.log('hellpo');
   let role = null;
   const roles = await roleService.list();
   if (listEmailAdmins.has(email)) role = roles.find((x) => x.name === 'ADMIN')._id;
@@ -61,9 +60,10 @@ const loginWithGoogle = async (req, res, next) => {
     }
     const user = await _User.findOne({ email })
       .populate({ path: 'roleId', select: 'name _id' });
-    const token = jwt.sign({ email }, secretKey, {
-      expiresIn: '720h',
+    const token = jwt.sign({ email }, '123456', {
+      expiresIn: '24h',
     });
+    // console.log('🚀 ~ file: auth.controller.js ~ line 66 ~ loginWithGoogle ~ secretKey', secretKey);
     if (!user) {
       const newUser = await _User.create({
         name,
@@ -72,7 +72,9 @@ const loginWithGoogle = async (req, res, next) => {
         picture,
         roleId,
       });
-      return res.status(200).send({ userInfo: newUser, accessToken: token });
+      const userAfter = await _User.findOne({ email })
+        .populate({ path: 'roleId', select: 'name _id' });
+      return res.status(200).send({ userInfo: userAfter, accessToken: token });
     }
     return res.status(200).send({ userInfo: user, accessToken: token });
   } catch (err) {
