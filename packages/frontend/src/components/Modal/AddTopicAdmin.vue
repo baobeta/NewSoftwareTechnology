@@ -6,7 +6,7 @@
     v-slot="{ params, close }"
     v-bind="$attrs"
   >
-    <div class="relative p-4 w-full max-w-2xl h-full md:h-auto mx-auto mt-[10%]">
+    <div class="relative p-4 w-full max-w-2xl h-full md:h-auto mx-auto mt-[10px]">
       <!-- Modal content -->
       <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
         <!-- Modal header -->

@@ -99,8 +99,10 @@
     @save-topic="handleAddTopicAdmin"
   />
   <UpdateTopicAdmin
+    v-if="modalUpdateAddTopicAdmin"
     v-model="modalUpdateAddTopicAdmin"
     :topic-id="currentTopicId"
+    @update-topic="handleUpdate"
   />
   <InfoModal
     v-model="showInfoModal"
@@ -170,10 +172,23 @@ export default {
       'userId', 'userEmail', 'userRole', 'token',
     ]),
   },
-  emits: ['removeTopic', 'addTopic'],
+  emits: ['removeTopic', 'addTopic', 'updateTopic'],
   methods: {
+    async handleUpdate (close, value) {
+      try {
+        // eslint-disable-next-line max-len
+        await TopicApi.updateTopicById(this.token, value.id, value.nameTopic, value.description, value.limit, value.teacher, value.major);
+        close();
+        this.$emit('updateTopic');
+      } catch (e) {
+        close();
+        this.messageError = 'Đã có lỗi xảy ra vui lòng xử lý lại';
+        this.showErrorModal = true;
+      }
+    },
     async handleUpdateTopic (topicId) {
-      this.currentTopic = await TopicApi.listTopicById(this.token, topicId);
+      const currentTopic = await TopicApi.listTopicById(this.token, topicId);
+      this.$store.dispatch('topic/updateTopic', currentTopic);
       this.modalUpdateAddTopicAdmin = true;
     },
     async handleAddTopicAdmin (close, value) {

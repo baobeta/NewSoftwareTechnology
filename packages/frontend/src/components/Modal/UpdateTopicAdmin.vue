@@ -6,13 +6,13 @@
     v-slot="{ params, close }"
     v-bind="$attrs"
   >
-    <div class="relative p-4 w-full max-w-2xl h-full md:h-auto mx-auto mt-[10%]">
+    <div class="relative p-4 w-full max-w-2xl h-full md:h-auto mx-auto mt-[10px]">
       <!-- Modal content -->
       <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
         <!-- Modal header -->
         <div class="flex justify-between items-start p-4 rounded-t border-b dark:border-gray-600">
           <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-            Thêm đề tài
+            Chỉnh sửa đề tài
           </h3>
           <button
             type="button"
@@ -140,13 +140,10 @@ export default {
   name: 'UpdateTopicAdmins',
   inheritAttrs: false,
   props: {
-    topicId: {
-      type: String,
-      default: '',
-    },
   },
   data () {
     return {
+      currentId: '',
       nameTopic: '',
       description: '',
       teacher: '',
@@ -186,18 +183,19 @@ export default {
     this.listTeacher = listTeacher;
     const major = await MajorApi.listAllMajor(this.token);
     this.listMajor = major;
-    console.log(this.topicId);
-    // this.nameTopic = this.topic.title || '';
-    // this.description = this.topic.description || '';
-    // this.teacher = this.topic.lecturerId ? this.topic.lecturerId._id : '';
-    // this.major = this.topic.majorId ? this.topic.majorId._id : '';
-    // this.limit = this.topic.limit || '';
+    const { currentTopic } = this.$store.state.topic;
+    this.currentId = currentTopic._id;
+    this.nameTopic = currentTopic.title;
+    this.description = currentTopic.description;
+    this.teacher = currentTopic.lecturerId._id || '';
+    this.major = currentTopic.majorId._id || '';
+    this.limit = currentTopic.limit || '';
   },
   methods: {
-    handleSave (close, nameTopic, description, teacher, major, limit) {
-      // this.$emit('saveTopic', close, {
-      //   nameTopic, description, teacher, major, limit,
-      // });
+    handleUpdate (close, nameTopic, description, teacher, major, limit) {
+      this.$emit('updateTopic', close, {
+        id: this.currentId, nameTopic, description, teacher, major, limit,
+      });
       this.nameTopic = '';
       this.description = '';
       this.teacher = '';

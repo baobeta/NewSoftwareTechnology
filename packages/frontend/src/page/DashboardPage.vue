@@ -36,6 +36,7 @@
           :list-topic="listTopic"
           @remove-topic="fetchData"
           @add-topic="fetchData"
+          @update-topic="fetchData"
         />
         <ManageRegisterAdmin v-if="select === 'manage_register_admin'" />
         <ManageRegisterTeacher v-if="select === 'manage_register_teacher'" />
