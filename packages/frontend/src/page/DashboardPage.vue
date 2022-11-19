@@ -1,4 +1,6 @@
 <!-- eslint-disable max-len -->
+<!-- eslint-disable max-len -->
+<!-- eslint-disable max-len -->
 <template>
   <div class="flex bg-slate-300">
     <SideBar
@@ -29,7 +31,12 @@
           @cancel-register="fetchData"
         />
         <ManageUserAdmin v-if="select === 'manage_user_admin'" />
-        <ManageTopicAdmin v-if="select === 'manage_topic_admin'" />
+        <ManageTopicAdmin
+          v-if="select === 'manage_topic_admin'"
+          :list-topic="listTopic"
+          @remove-topic="fetchData"
+          @add-topic="fetchData"
+        />
         <ManageRegisterAdmin v-if="select === 'manage_register_admin'" />
         <ManageRegisterTeacher v-if="select === 'manage_register_teacher'" />
         <ManageTopicTeacher v-if="select === 'manage_topic_teacher'" />
@@ -97,6 +104,7 @@ export default {
       this.select = value;
     },
     async handleSearchTopic (data) {
+      // eslint-disable-next-line max-len
       this.listTopicSearch = await TopicApi.listTopicWithName(this.token, data.value, data.type) || [];
       this.select = 'search';
     },
