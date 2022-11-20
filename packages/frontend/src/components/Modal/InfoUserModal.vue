@@ -40,7 +40,7 @@
             Email: {{ email }}
           </p>
           <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-            Giới tính: {{ sex }}
+            Giới tính: {{ sex === 'male' ? 'Name' :'Nữ' }}
           </p>
         </div>
         <!-- Modal footer -->

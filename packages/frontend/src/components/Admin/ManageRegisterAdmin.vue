@@ -14,13 +14,7 @@
             scope="col"
             class="py-3 px-6"
           >
-            Giáo viên hướng dẫn
-          </th>
-          <th
-            scope="col"
-            class="py-3 px-6"
-          >
-            Số lượng
+            Sinh viên đăng ký
           </th>
           <th
             scope="col"
@@ -31,75 +25,29 @@
         </tr>
       </thead>
       <tbody>
-        <tr class="bg-slate-300 border- hover:bg-gray-50 ">
+        <tr
+          v-for="register in listRegister"
+          :key="`topic-${register._id}`"
+          class="bg-slate-300 hover:bg-gray-50 "
+        >
           <th
-            scope="row"
-            class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap"
-          >
-            Apple MacBook Pro 17"
-          </th>
-          <td class="py-4 px-6">
-            Laptop
-          </td>
-          <td class="py-4 px-6">
-            $2999
-          </td>
-          <td class="py-4 px-6 text-right">
-            <a
-              href="#"
-              class="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-2"
-            >Đăng kí</a>
-            <a
-              href="#"
-              class="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-2"
-            >Xem chi tiết</a>
-          </td>
-        </tr>
-        <tr class="bg-slate-300 border-b  hover:bg-gray-50 ">
-          <th
+            :key="`topic-${register._id}`"
             scope="row"
             class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap "
           >
-            Microsoft Surface Pro
+            {{ register.topicId ? register.topicId.title : '' }}
           </th>
           <td class="py-4 px-6">
-            Laptop PC
-          </td>
-          <td class="py-4 px-6">
-            $1999
+            {{ register.studentId ? register.studentId.name : '' }}
           </td>
           <td class="py-4 px-6 text-right">
             <a
-              href="#"
               class="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-2"
-            >Đăng kí</a>
+              @click="handleRemoveTopic(topic._id)"
+            >Xóa</a>
             <a
-              href="#"
               class="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-2"
-            >Xem chi tiết</a>
-          </td>
-        </tr>
-        <tr class="bg-slate-300 hover:bg-gray-50 ">
-          <th
-            scope="row"
-            class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap "
-          >
-            Magic Mouse 2
-          </th>
-          <td class="py-4 px-6">
-            Accessories
-          </td>
-          <td class="py-4 px-6">
-            $99
-          </td>
-          <td class="py-4 px-6 text-right">
-            <a
-              href="#"
-              class="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-2"
-            >Đăng kí</a>
-            <a
-              href="#"
-              class="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-2"
+              @click="handleShowTopic(topic._id,topic.title,topic.lecturerId.name, topic.description)"
             >Xem chi tiết</a>
           </td>
         </tr>
@@ -109,6 +57,9 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex';
+import RegisterApi from '../../utils/api/register';
+
 export default {
   name: 'ManageRegisterAdmin',
   components: {
@@ -117,9 +68,21 @@ export default {
   },
   data () {
     return {
+      listRegister: [],
     };
   },
   computed: {
+    ...mapState({
+      isAuthenticated: ({ auth: { isAuthenticated } }) => isAuthenticated,
+    }),
+    ...mapGetters('auth', [
+      'userId', 'userEmail', 'userRole', 'token',
+    ]),
+  },
+  async mounted () {
+    const register = await RegisterApi.listAllRegistration(this.token);
+    console.log('🚀 ~ file: ManageRegisterAdmin.vue ~ line 95 ~ mounted ~ register', register);
+    this.listRegister = register;
   },
   methods: {
   },

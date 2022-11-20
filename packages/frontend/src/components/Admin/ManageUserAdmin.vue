@@ -1,6 +1,15 @@
 <!-- eslint-disable max-len -->
+<!-- eslint-disable max-len -->
 <template>
-  <div class="overflow-x-auto relative shadow-md sm:rounded-lg m-4">
+  <div class="flex">
+    <div
+      class=" rounded ml-auto mr-4 my-2 bg-blue-800 text-white font-sans font-semibold py-2 px-4"
+      @click="modalAddUserAdmin = true"
+    >
+      Thêm người dùng
+    </div>
+  </div>
+  <div class="shadow-md sm:rounded-lg m-4">
     <table class="w-full text-sm text-left text-gray-500">
       <thead class="text-xs text-gray-700 uppercase bg-gray-300">
         <tr>
@@ -8,19 +17,13 @@
             scope="col"
             class="py-3 px-6"
           >
-            Tên đề tài
+            Tên người dùng
           </th>
           <th
             scope="col"
             class="py-3 px-6"
           >
-            Giáo viên hướng dẫn
-          </th>
-          <th
-            scope="col"
-            class="py-3 px-6"
-          >
-            Số lượng
+            Quyền hạn
           </th>
           <th
             scope="col"
@@ -31,97 +34,160 @@
         </tr>
       </thead>
       <tbody>
-        <tr class="bg-slate-300 border- hover:bg-gray-50 ">
+        <tr
+          v-for="user in listUser"
+          :key="`user-${user._id}`"
+          class="bg-slate-300 hover:bg-gray-50 "
+        >
           <th
-            scope="row"
-            class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap"
-          >
-            Apple MacBook Pro 17"
-          </th>
-          <td class="py-4 px-6">
-            Laptop
-          </td>
-          <td class="py-4 px-6">
-            $2999
-          </td>
-          <td class="py-4 px-6 text-right">
-            <a
-              href="#"
-              class="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-2"
-            >Đăng kí</a>
-            <a
-              href="#"
-              class="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-2"
-            >Xem chi tiết</a>
-          </td>
-        </tr>
-        <tr class="bg-slate-300 border-b  hover:bg-gray-50 ">
-          <th
+            :key="`user-${user._id}`"
             scope="row"
             class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap "
           >
-            Microsoft Surface Pro
+            {{ user.name }}
           </th>
           <td class="py-4 px-6">
-            Laptop PC
-          </td>
-          <td class="py-4 px-6">
-            $1999
+            <div
+              class="font-bold cursor-pointer"
+            >
+              {{ displayNameRole(user.roleId) }}
+            </div>
           </td>
           <td class="py-4 px-6 text-right">
             <a
-              href="#"
               class="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-2"
-            >Đăng kí</a>
+              @click="handleRemoveUser(user._id)"
+            >Xóa</a>
             <a
-              href="#"
               class="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-2"
-            >Xem chi tiết</a>
-          </td>
-        </tr>
-        <tr class="bg-slate-300 hover:bg-gray-50 ">
-          <th
-            scope="row"
-            class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap "
-          >
-            Magic Mouse 2
-          </th>
-          <td class="py-4 px-6">
-            Accessories
-          </td>
-          <td class="py-4 px-6">
-            $99
-          </td>
-          <td class="py-4 px-6 text-right">
+              @click="handleUpdateUser(user._id)"
+            >Sửa</a>
             <a
-              href="#"
               class="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-2"
-            >Đăng kí</a>
-            <a
-              href="#"
-              class="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-2"
+              @click="handleShowUser(user.name, user.email, user.sex)"
             >Xem chi tiết</a>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
+  <InfoUserModal
+    v-model="showInfoModal"
+    :name="currentUser.name"
+    :email="currentUser.email"
+    :sex="currentUser.sex"
+    @close-info-user-modal="closeInfoUserModal"
+  />
+  <AddUserAdmin
+    v-model="modalAddUserAdmin"
+    @add-user="handleAddUserAdmin"
+  />
+  <UpdateUserAdmin
+    v-if="modalUpdateUserAdmin"
+    v-model="modalUpdateUserAdmin"
+    @update-user="handleUpdate"
+  />
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex';
+import UserApi from '../../utils/api/user';
+import InfoUserModal from '../Modal/InfoUserModal.vue';
+import AddUserAdmin from '../Modal/AddUserAdmin.vue';
+import UpdateUserAdmin from '../Modal/UpdateUserAdmin.vue';
+
 export default {
   name: 'ManageUserAdmin',
   components: {
+    InfoUserModal,
+    AddUserAdmin,
+    UpdateUserAdmin,
   },
   props: {
+    listUser: Array,
   },
   data () {
     return {
+      modalAddUserAdmin: false,
+      modalUpdateUserAdmin: false,
+      show: false,
+      showInfoModal: false,
+      showErrorModal: false,
+      currentUser: { name: '', sex: '', email: '' },
+      currentDescriptionTopic: '',
+      messageError: '',
     };
   },
   computed: {
+    ...mapState({
+      isAuthenticated: ({ auth: { isAuthenticated } }) => isAuthenticated,
+    }),
+    ...mapGetters('auth', [
+      'userId', 'userEmail', 'userRole', 'token',
+    ]),
   },
+  emits: ['remove-user', 'add-user', 'update-user'],
   methods: {
+    async handleUpdate (value) {
+      try {
+        // eslint-disable-next-line max-len
+        const a = await UserApi.updateUserById(this.token, value.id, value.sex, value.name, value.email, value.code, value.role);
+        this.$emit('update-user');
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async handleUpdateUser (userId) {
+      try {
+        // eslint-disable-next-line max-len
+        const user = await UserApi.getUserById(this.token, userId);
+        this.$store.dispatch('user/updateUser', user);
+        this.modalUpdateUserAdmin = true;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async handleAddUserAdmin (value) {
+      try {
+        // eslint-disable-next-line max-len
+        const a = await UserApi.addUser(this.token, value.name, value.code, value.sex, value.email, value.role);
+        this.$emit('add-user');
+        console.log(a);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    handleShowUser (name, email, sex) {
+      this.currentUser = { name, email, sex };
+      this.showInfoModal = true;
+    },
+    closeErrorModal (close) {
+      this.currentTopicId = '';
+      this.currentTopicName = '';
+      this.currentTeacher = '';
+      this.currentContentTopic = '';
+      this.currentDescriptionTopic = '';
+      close();
+      this.showErrorModal = false;
+    },
+    closeInfoUserModal (close) {
+      this.currentUser = { name: '', email: '', sex: '' };
+      close();
+      this.showInfoModal = false;
+    },
+    displayNameRole (teacher) {
+      if (teacher && teacher.name) return teacher.name;
+      return '';
+    },
+    async handleRemoveUser (id) {
+      try {
+        await UserApi.deleteUserById(this.token, id);
+        this.$emit('remove-user');
+      } catch (e) {
+        this.messageError = 'Đã có lỗi xảy ra vui lòng xử lý lại';
+        this.showErrorModal = true;
+      }
+    },
   },
 };
 </script>

@@ -30,7 +30,13 @@
           :list-register-topic="listRegisterByUser"
           @cancel-register="fetchData"
         />
-        <ManageUserAdmin v-if="select === 'manage_user_admin'" />
+        <ManageUserAdmin
+          v-if="select === 'manage_user_admin'"
+          :list-user="listUser"
+          @remove-user="fetchData"
+          @add-user="fetchData"
+          @update-user="fetchData"
+        />
         <ManageTopicAdmin
           v-if="select === 'manage_topic_admin'"
           :list-topic="listTopic"
@@ -62,6 +68,7 @@ import ManageTopicTeacher from '../components/Teacher/ManageTopicTeacher.vue';
 import ManageRegisterTeacher from '../components/Teacher/ManageRegisterTeacher.vue';
 import TopicApi from '../utils/api/topic';
 import RegisterApi from '../utils/api/register';
+import UserApi from '../utils/api/user';
 
 export default {
   name: 'DashboardPage',
@@ -86,6 +93,7 @@ export default {
       listTopic: [],
       listTopicSearch: [],
       showConfirmRegister: false,
+      listUser: [],
       listRegisterByUser: [],
     };
   },
@@ -113,6 +121,8 @@ export default {
       try {
         this.listTopic = await TopicApi.listAllTopics(this.token) || [];
         this.listRegisterByUser = await RegisterApi.studentViewRegister(this.token);
+        const userAll = await UserApi.getAllUser(this.token);
+        this.listUser = userAll.filter((user) => user.roleId.name !== 'ADMIN');
       } catch (e) {
         console.log(e.message);
       }
