@@ -19,12 +19,12 @@ const router = (app) => {
       message: 'api ok',
     });
   });
-  app.get('/v1/user', isAuth, permit('user.list'), list);
-  app.get('/v1/user/:id', isAuth, permit('user.view'), findOne);
-  app.put('/v1/user/:id', isAuth, permit('user.update'), update);
+  app.get('/v1/user', isAuth, list);
+  app.get('/v1/user/:id', findOne);
+  app.put('/v1/user/:id', isAuth, update);
 
-  app.get('/v1/profile', isAuth, permit('profile.view'), viewProfile);
-  app.post('/v1/profile', isAuth, permit('profile.edit'), editProfile);
+  app.get('/v1/profile', isAuth, viewProfile);
+  app.post('/v1/profile', isAuth, editProfile);
 };
 
 module.exports = router;

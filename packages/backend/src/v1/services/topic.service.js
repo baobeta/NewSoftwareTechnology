@@ -2,6 +2,7 @@
 /* eslint-disable no-case-declarations */
 const _ = require('lodash');
 
+const mongoose = require('mongoose');
 const _Topic = require('../models/topic.model');
 const _User = require('../models/user.model');
 const _Role = require('../models/role.model');
@@ -9,7 +10,7 @@ const regisService = require('./registration.service');
 
 const insert = async (title, description, limit, lecturerId, majorId) => {
   const topic = await _Topic.create({
-    title, description, limit, lecturerId, majorId,
+    title, description, limit, lecturerId: mongoose.Types.ObjectId(lecturerId), majorId: mongoose.Types.ObjectId(majorId),
   });
   return topic;
 };
@@ -102,7 +103,7 @@ const list = async (majorId, lecturerId) => {
 
 const update = async (id, title, description, limit, lecturerId, majorId) => {
   await _Topic.updateOne({ _id: id }, {
-    title, description, limit, lecturerId, majorId,
+    title, description, limit, lecturerId: mongoose.Types.ObjectId(lecturerId), majorId: mongoose.Types.ObjectId(majorId),
   });
 };
 

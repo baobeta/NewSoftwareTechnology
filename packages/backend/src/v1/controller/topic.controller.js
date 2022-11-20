@@ -59,6 +59,7 @@ const updateTopic = async (req, res, next) => {
 
 const deleteTopic = async (req, res, next) => {
   try {
+    console.log('he');
     const { id } = req.params;
     await remove(id);
     return res.status(200).send('success');
