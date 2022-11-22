@@ -2,7 +2,10 @@
 <!-- eslint-disable max-len -->
 <!-- eslint-disable max-len -->
 <template>
-  <div class="flex bg-slate-300">
+  <div
+    v-if="isAuthenticated"
+    class="flex bg-slate-300"
+  >
     <SideBar
       :select="select"
       :role="userRole"
@@ -49,6 +52,14 @@
         <ManageTopicTeacher v-if="select === 'manage_topic_teacher'" />
       </div>
     </div>
+  </div>
+  <div
+    v-else
+    class="flex"
+  >
+    <h1 class="text-center h-[30%] font-sans font-bold text-2xl">
+      Vui lòng đăng nhập
+    </h1>
   </div>
 </template>
 

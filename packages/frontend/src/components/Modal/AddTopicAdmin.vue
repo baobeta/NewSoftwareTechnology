@@ -118,10 +118,18 @@
           <!-- Modal footer -->
           <div class="flex items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
             <button
-              data-modal-toggle="defaultModal"
+              v-if="isValid"
               type="button"
-              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
               @click="handleSave(close,nameTopic, description,teacher, major, limit)"
+            >
+              Save
+            </button>
+            <button
+              v-else
+              type="button"
+              class="text-white bg-red-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center "
+              disabled
             >
               Save
             </button>
@@ -175,6 +183,9 @@ export default {
     ...mapGetters('auth', [
       'userId', 'userEmail', 'userRole', 'token',
     ]),
+    isValid () {
+      return (this.limit >= 0) && (this.nameTopic !== '') && (this.teacher !== '') && (this.major !== '');
+    },
   },
 
   async mounted () {
