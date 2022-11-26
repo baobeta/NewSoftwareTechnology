@@ -47,7 +47,11 @@
           @add-topic="fetchData"
           @update-topic="fetchData"
         />
-        <ManageRegisterAdmin v-if="select === 'manage_register_admin'" />
+        <ManageRegisterAdmin
+          v-if="select === 'manage_register_admin'"
+          @add-register="fetchData"
+          @remove-register="fetchData"
+        />
         <ManageRegisterTeacher v-if="select === 'manage_register_teacher'" />
         <ManageTopicTeacher v-if="select === 'manage_topic_teacher'" />
       </div>
