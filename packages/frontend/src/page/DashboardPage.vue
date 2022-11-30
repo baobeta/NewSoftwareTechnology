@@ -52,8 +52,18 @@
           @add-register="fetchData"
           @remove-register="fetchData"
         />
-        <ManageRegisterTeacher v-if="select === 'manage_register_teacher'" />
-        <ManageTopicTeacher v-if="select === 'manage_topic_teacher'" />
+        <ManageRegisterTeacher
+          v-if="select === 'manage_register_teacher'"
+          @add-register="fetchData"
+          @remove-register="fetchData"
+        />
+        <ManageTopicTeacher
+          v-if="select === 'manage_topic_teacher'"
+          :list-topic="listTopicByLecturer"
+          @remove-topic="fetchData"
+          @add-topic="fetchData"
+          @update-topic="fetchData"
+        />
       </div>
     </div>
   </div>
@@ -110,6 +120,7 @@ export default {
       showConfirmRegister: false,
       listUser: [],
       listRegisterByUser: [],
+      listTopicByLecturer: [],
     };
   },
   computed: {
@@ -135,6 +146,7 @@ export default {
     async fetchData () {
       try {
         this.listTopic = await TopicApi.listAllTopics(this.token) || [];
+        this.listTopicByLecturer = this.listTopic.filter((t) => t.lecturerId._id === this.userId.toString());
         this.listRegisterByUser = await RegisterApi.studentViewRegister(this.token);
         const userAll = await UserApi.getAllUser(this.token);
         this.listUser = userAll.filter((user) => user.roleId.name !== 'ADMIN');
