@@ -1,11 +1,10 @@
+const mongoose = require('mongoose');
 const _User = require('../models/user.model');
+const _Role = require('../models/role.model');
 
-const insert = async (firstName, lastName, sex, email) => {
+const insert = async (name, email, code, sex, roleId, picture = '') => {
   const user = await _User.create({
-    firstName,
-    lastName,
-    sex,
-    email,
+    name, email, code, picture, roleId: mongoose.Types.ObjectId(roleId),
   });
   return user;
 };

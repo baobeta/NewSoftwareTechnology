@@ -8,15 +8,15 @@
   >
     <div class="relative p-4 w-full max-w-2xl h-full md:h-auto mx-auto mt-[10px]">
       <!-- Modal content -->
-      <div class="relative bg-white rounded-lg shadow ">
+      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
         <!-- Modal header -->
-        <div class="flex justify-between items-start p-4 rounded-t border-b ">
-          <h3 class="text-xl font-semibold text-gray-900">
-            Thêm đề tài
+        <div class="flex justify-between items-start p-4 rounded-t border-b dark:border-gray-600">
+          <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+            Chỉnh sửa đề tài
           </h3>
           <button
             type="button"
-            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
+            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
             data-modal-toggle="defaultModal"
             @click="close"
           >
@@ -58,28 +58,8 @@
             </label>
             <textarea
               v-model="description"
-              class="shadow appearance-none border rounded w-full py-2 pr-8 pl-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              class="shadow appearance-none border rounded w-full py-2 px-8 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
-          </div>
-          <div class="mb-6">
-            <label
-              class="block text-gray-700 text-sm font-bold mb-2"
-            >
-              Giáo viên hướng dẫn
-            </label>
-            <select
-              v-model="teacher"
-              class="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-              @change="onChangeTeacher"
-            >
-              <option
-                v-for="option in listTeacher"
-                :key="`key-${option.name}`"
-                :value="option._id"
-              >
-                {{ option.name }}
-              </option>
-            </select>
           </div>
           <div class="mb-6">
             <label
@@ -118,18 +98,10 @@
           <!-- Modal footer -->
           <div class="flex items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
             <button
-              v-if="isValid"
+              data-modal-toggle="defaultModal"
               type="button"
-              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-              @click="handleSave(close,nameTopic, description,teacher, major, limit)"
-            >
-              Save
-            </button>
-            <button
-              v-else
-              type="button"
-              class="text-white bg-red-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center "
-              disabled
+              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              @click="handleUpdate(close,nameTopic, description,teacher, major, limit)"
             >
               Save
             </button>
@@ -145,26 +117,18 @@ import UserApi from '../../utils/api/user';
 import MajorApi from '../../utils/api/major';
 
 export default {
-  name: 'AddTopicAdmins',
+  name: 'UpdateTopicAdmins',
   inheritAttrs: false,
   props: {
-    // eslint-disable-next-line vue/require-prop-types
   },
   data () {
     return {
+      currentId: '',
       nameTopic: '',
       description: '',
       teacher: '',
       major: '',
       limit: 0,
-      listTeacher: [{
-        name: 'test',
-        _id: 'hehe',
-      },
-      {
-        name: 'test2',
-        _id: 'haha',
-      }],
       listMajor: [
         {
           name: 'test',
@@ -183,9 +147,6 @@ export default {
     ...mapGetters('auth', [
       'userId', 'userEmail', 'userRole', 'token',
     ]),
-    isValid () {
-      return (this.limit >= 0) && (this.nameTopic !== '') && (this.teacher !== '') && (this.major !== '');
-    },
   },
 
   async mounted () {
@@ -194,21 +155,23 @@ export default {
     this.listTeacher = listTeacher;
     const major = await MajorApi.listAllMajor(this.token);
     this.listMajor = major;
+    const { currentTopic } = this.$store.state.topic;
+    this.currentId = currentTopic._id;
+    this.nameTopic = currentTopic.title;
+    this.description = currentTopic.description;
+    this.teacher = currentTopic.lecturerId._id || '';
+    this.major = currentTopic.majorId._id || '';
+    this.limit = currentTopic.limit || '';
   },
   methods: {
-    handleSave (close, nameTopic, description, teacher, major, limit) {
-      this.$emit('saveTopic', close, {
-        nameTopic, description, teacher, major, limit,
+    handleUpdate (close, nameTopic, description, teacher, major, limit) {
+      this.$emit('updateTopic', close, {
+        id: this.currentId, nameTopic, description, teacher: this.userId, major, limit,
       });
       this.nameTopic = '';
       this.description = '';
-      this.teacher = '';
       this.major = '';
       this.limit = '';
-    },
-    onChangeTeacher (e) {
-      const { value } = e.target;
-      this.teacher = value;
     },
     onChangeMajor (e) {
       const { value } = e.target;

@@ -65,26 +65,6 @@
             <label
               class="block text-gray-700 text-sm font-bold mb-2"
             >
-              Giáo viên hướng dẫn
-            </label>
-            <select
-              v-model="teacher"
-              class="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-              @change="onChangeTeacher"
-            >
-              <option
-                v-for="option in listTeacher"
-                :key="`key-${option.name}`"
-                :value="option._id"
-              >
-                {{ option.name }}
-              </option>
-            </select>
-          </div>
-          <div class="mb-6">
-            <label
-              class="block text-gray-700 text-sm font-bold mb-2"
-            >
               Chuyên ngành
             </label>
             <select
@@ -145,7 +125,7 @@ import UserApi from '../../utils/api/user';
 import MajorApi from '../../utils/api/major';
 
 export default {
-  name: 'AddTopicAdmins',
+  name: 'AddTopicRegister',
   inheritAttrs: false,
   props: {
     // eslint-disable-next-line vue/require-prop-types
@@ -157,14 +137,6 @@ export default {
       teacher: '',
       major: '',
       limit: 0,
-      listTeacher: [{
-        name: 'test',
-        _id: 'hehe',
-      },
-      {
-        name: 'test2',
-        _id: 'haha',
-      }],
       listMajor: [
         {
           name: 'test',
@@ -184,7 +156,7 @@ export default {
       'userId', 'userEmail', 'userRole', 'token',
     ]),
     isValid () {
-      return (this.limit >= 0) && (this.nameTopic !== '') && (this.teacher !== '') && (this.major !== '');
+      return (this.limit >= 0) && (this.nameTopic !== '') && (this.major !== '');
     },
   },
 
@@ -198,11 +170,10 @@ export default {
   methods: {
     handleSave (close, nameTopic, description, teacher, major, limit) {
       this.$emit('saveTopic', close, {
-        nameTopic, description, teacher, major, limit,
+        nameTopic, description, teacher: this.userId, major, limit,
       });
       this.nameTopic = '';
       this.description = '';
-      this.teacher = '';
       this.major = '';
       this.limit = '';
     },

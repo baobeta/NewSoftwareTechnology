@@ -36,6 +36,16 @@ const update = async (req, res, next) => {
   }
 };
 
+const remove = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    await userService.remove(id);
+    return res.status(200).send('success');
+  } catch (err) {
+    return next(err);
+  }
+};
+
 const viewProfile = async (req, res, next) => {
   try {
     const id = req.user._id;
@@ -59,10 +69,24 @@ const editProfile = async (req, res, next) => {
   }
 };
 
+const insert = async (req, res, next) => {
+  try {
+    const {
+      name, email, code, sex, roleId,
+    } = req.body;
+    await userService.insert(name, email, code, sex, roleId);
+    return res.status(200).send('success');
+  } catch (err) {
+    return next(err);
+  }
+};
+
 module.exports = {
   findOne,
   list,
   update,
   viewProfile,
   editProfile,
+  remove,
+  insert,
 };

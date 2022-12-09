@@ -14,7 +14,7 @@
 <script>
 import SideBar from '../components/Dashboard/SideBar.vue';
 import HeaderBar from '../components/Dashboard/HeaderBar.vue';
-import TableDKMH from '../components/Dashboard/TableDKMH.vue';
+import TableDKMH from '../components/Student/TableDKMH.vue';
 
 export default {
   name: 'DashboardPage',

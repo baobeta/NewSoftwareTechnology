@@ -2,6 +2,7 @@ import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 import { sync } from 'vuex-router-sync';
 import auth from './auth';
+import user from './user';
 import topic from './topic';
 import router from '../router';
 
@@ -31,6 +32,7 @@ const store = new Vuex.Store({
   modules: {
     auth,
     topic,
+    user,
   },
   plugins: [vuexLocal],
 });

@@ -11,12 +11,12 @@
       <div class="relative bg-white rounded-lg shadow ">
         <!-- Modal header -->
         <div class="flex justify-between items-start p-4 rounded-t border-b ">
-          <h3 class="text-xl font-semibold text-gray-900">
-            Thêm đề tài
+          <h3 class="text-xl font-semibold text-gray-900 ">
+            Thêm đăng ký đề tài cho sinh viên
           </h3>
           <button
             type="button"
-            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
+            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center "
             data-modal-toggle="defaultModal"
             @click="close"
           >
@@ -36,48 +36,22 @@
         </div>
         <!-- Modal body -->
         <div class="p-6 space-y-6">
-          <div class="mb-4">
+          <div class="mb-6">
             <label
               class="block text-gray-700 text-sm font-bold mb-2"
             >
               Tên đề tài
             </label>
-            <input
-              id="username"
-              v-model="nameTopic"
-              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              type="text"
-              placeholder="Tên đề tài"
-            >
-          </div>
-          <div class="mb-4">
-            <label
-              class="block text-gray-700 text-sm font-bold mb-2"
-            >
-              Mô tả đề tài
-            </label>
-            <textarea
-              v-model="description"
-              class="shadow appearance-none border rounded w-full py-2 pr-8 pl-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-          </div>
-          <div class="mb-6">
-            <label
-              class="block text-gray-700 text-sm font-bold mb-2"
-            >
-              Giáo viên hướng dẫn
-            </label>
             <select
-              v-model="teacher"
+              v-model="topicId"
               class="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-              @change="onChangeTeacher"
             >
               <option
-                v-for="option in listTeacher"
+                v-for="option in listTopic"
                 :key="`key-${option.name}`"
                 :value="option._id"
               >
-                {{ option.name }}
+                {{ option.title }}
               </option>
             </select>
           </div>
@@ -85,43 +59,28 @@
             <label
               class="block text-gray-700 text-sm font-bold mb-2"
             >
-              Chuyên ngành
+              Sinh viên đăng kí
             </label>
             <select
-              v-model="major"
+              v-model="studentId"
               class="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-              @change="onChangeMajor"
             >
               <option
-                v-for="option in listMajor"
-                :key="`key-${option._id}`"
+                v-for="option in listStudent"
+                :key="`key-${option.name}`"
                 :value="option._id"
               >
-                {{ option.name }}
+                {{ option.value }}
               </option>
             </select>
           </div>
-          <div class="mb-6">
-            <label
-
-              class="block text-gray-700 text-sm font-bold mb-2"
-            >
-              Số lượng
-            </label>
-            <input
-              v-model="limit"
-              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-              type="number"
-              min="0"
-            >
-          </div>
           <!-- Modal footer -->
-          <div class="flex items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
+          <div class="flex items-center p-6 space-x-2 rounded-b border-t border-gray-200">
             <button
               v-if="isValid"
               type="button"
               class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-              @click="handleSave(close,nameTopic, description,teacher, major, limit)"
+              @click="handleSave(close)"
             >
               Save
             </button>
@@ -142,38 +101,20 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import UserApi from '../../utils/api/user';
-import MajorApi from '../../utils/api/major';
+import TopicApi from '../../utils/api/topic';
 
 export default {
-  name: 'AddTopicAdmins',
+  name: 'AddRegisterTeacher',
   inheritAttrs: false,
   props: {
     // eslint-disable-next-line vue/require-prop-types
   },
   data () {
     return {
-      nameTopic: '',
-      description: '',
-      teacher: '',
-      major: '',
-      limit: 0,
-      listTeacher: [{
-        name: 'test',
-        _id: 'hehe',
-      },
-      {
-        name: 'test2',
-        _id: 'haha',
-      }],
-      listMajor: [
-        {
-          name: 'test',
-          _id: 'hehe',
-        },
-        {
-          name: 'test2',
-          _id: 'haha',
-        }],
+      listStudent: [],
+      listTopic: [],
+      studentId: '',
+      topicId: '',
     };
   },
   computed: {
@@ -184,35 +125,27 @@ export default {
       'userId', 'userEmail', 'userRole', 'token',
     ]),
     isValid () {
-      return (this.limit >= 0) && (this.nameTopic !== '') && (this.teacher !== '') && (this.major !== '');
+      return (this.studentId !== '') && (this.topicId !== '');
     },
   },
 
   async mounted () {
     const user = await UserApi.getAllUser(this.token);
-    const listTeacher = user.filter((u) => u.roleId.name === 'TEACHER');
-    this.listTeacher = listTeacher;
-    const major = await MajorApi.listAllMajor(this.token);
-    this.listMajor = major;
+    const listStudent = user.filter((u) => u.roleId.name === 'STUDENT');
+    this.listStudent = listStudent.map((u) => {
+      const object = { ...u, value: `${u.name} - ${u.code}` };
+      return object;
+    });
+    const listTopic = await TopicApi.listAllTopics(this.token);
+    this.listTopic = listTopic.filter((topic) => topic.lecturerId._id.toString() === this.userId.toString());
   },
   methods: {
-    handleSave (close, nameTopic, description, teacher, major, limit) {
-      this.$emit('saveTopic', close, {
-        nameTopic, description, teacher, major, limit,
+    handleSave (close) {
+      this.$emit('saveRegister', close, {
+        studentId: this.studentId, topicId: this.topicId,
       });
-      this.nameTopic = '';
-      this.description = '';
-      this.teacher = '';
-      this.major = '';
-      this.limit = '';
-    },
-    onChangeTeacher (e) {
-      const { value } = e.target;
-      this.teacher = value;
-    },
-    onChangeMajor (e) {
-      const { value } = e.target;
-      this.major = value;
+      this.studentId = '';
+      this.topicId = '';
     },
   },
 };
