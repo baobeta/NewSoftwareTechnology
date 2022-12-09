@@ -2,8 +2,13 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const _ = require('lodash');
 const AccessDenied = require('./utils/errors/AppError');
+const roleRoutes = require('./routes/role.route');
+const permissionsRoutes = require('./routes/permission.route');
 const userRoutes = require('./routes/user.route');
 const topicRoutes = require('./routes/topic.route');
+const majorRoutes = require('./routes/major.route');
+const authRoutes = require('./routes/auth.route');
+const registrationRoutes = require('./routes/registration.route');
 
 const app = express();
 
@@ -22,8 +27,13 @@ app.use((req, res, next) => {
 });
 
 // add router
+roleRoutes(app);
+permissionsRoutes(app);
 userRoutes(app);
 topicRoutes(app);
+majorRoutes(app);
+authRoutes(app);
+registrationRoutes(app);
 
 // handle error controller
 // need exactly 4 params for express to regconize

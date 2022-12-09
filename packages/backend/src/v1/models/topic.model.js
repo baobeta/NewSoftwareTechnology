@@ -1,11 +1,20 @@
 const mongoose = require('mongoose');
 
-const { Schema: { Types: { ObjectId } } } = mongoose;
+const { Schema } = mongoose;
+
+// const { Schema: { Types: { ObjectId } } } = mongoose;
 const TopicSchema = new mongoose.Schema({
   title: { type: String },
   description: { type: String },
-  type: { type: String },
-  lecturerId: { type: ObjectId },
+  limit: { type: Number },
+  lecturerId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+  },
+  majorId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Major',
+  },
 });
 
 module.exports = mongoose.model('Topic', TopicSchema);

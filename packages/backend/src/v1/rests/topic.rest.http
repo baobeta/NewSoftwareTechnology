@@ -1,35 +1,49 @@
-POST http://localhost:5000/v1/topic
+POST {{host}}/v1/topic
+Authorization: Bearer {{jwt_token}}
 Content-Type: application/json
 
 {
-  "title": "123",
-  "description": "mo ta",
-  "type": "dgudbjkd",
-  "lecturerId": "635942d4cf459a148ca5f033"
+  "title": "DDDD",
+  "description": "Sử dụng NodeJS VueJS MongoDB",
+  "limit": 3,
+  "lecturerId": "636e4aa0e92f347ecc973f88",
+  "majorId": "6371ca81ddb79f5e94c4c870"
 }
 ###
 
-GET http://localhost:5000/v1/topic
+GET {{host}}/v1/topic
+Authorization: Bearer {{jwt_token}}
+###
+GET {{host}}/v1/topic
+?majorId=6371ca81ddb79f5e94c4c870
+Authorization: Bearer {{jwt_token}}
+###
+GET {{host}}/v1/topic
+?majorId=
+&lecturerId=6370dd90ed2c291d84384e02
+Authorization: Bearer {{jwt_token}}
+###
+GET {{host}}/v1/topic/6371ec7ac47cb65954470851
+Authorization: Bearer {{jwt_token}}
 ###
 
-GET http://localhost:5000/v1/topic/635a2f9304c8b351f08d35bf
-###
-
-PUT http://localhost:5000/v1/topic
+PUT {{host}}/v1/topic/636dbd15af1e9b5b60c401f5
+Authorization: Bearer {{jwt_token}}
 Content-Type: application/json
 
 {
-  "id":"635a2ee704c8b351f08d35ba",
-  "title": "123",
-  "description": "mo ta",
-  "type": "dgudbjkd",
-  "lecturerId": "635942d4cf459a148ca5f033"
+  "title": "AAAA",
+  "description": "Sử dụng NodeJS VueJS MongoDB",
+  "limit": 3,
+  "lecturerId": "636e4aa0e92f347ecc973f88",
+  "majorId": "6371ca81ddb79f5e94c4c870"
 }
 
 ###
-DELETE http://localhost:5000/v1/topic
-Content-Type: application/json
-
-{
-  "id":"635a2ee704c8b351f08d35ba"
-}
+DELETE {{host}}/v1/topic/63651af3436a862a8c24fd50
+Authorization: Bearer {{jwt_token}}
+###
+GET {{host}}/v1/topic-search
+?type=title
+&value=CNTT
+Authorization: Bearer {{jwt_token}}

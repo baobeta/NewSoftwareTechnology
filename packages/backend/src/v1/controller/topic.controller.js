@@ -1,13 +1,13 @@
 const {
-  insert, list, update, remove, findOne,
+  insert, list, search, update, remove, findOne,
 } = require('../services/topic.service');
 
 const insertTopic = async (req, res, next) => {
   try {
     const {
-      title, description, type, lecturerId,
+      title, description, limit, lecturerId, majorId,
     } = req.body;
-    const topic = await insert(title, description, type, lecturerId);
+    const topic = await insert(title, description, limit, lecturerId, majorId);
     return res.status(201).send(topic);
   } catch (err) {
     return next(err);
@@ -26,8 +26,19 @@ const findOneTopic = async (req, res, next) => {
 
 const listTopic = async (req, res, next) => {
   try {
-    const topics = await list();
-    return res.status(201).send(topics);
+    const { majorId, lecturerId } = req.query;
+    const topics = await list(majorId, lecturerId);
+    return res.status(200).send(topics);
+  } catch (err) {
+    return next(err);
+  }
+};
+
+const searchTopic = async (req, res, next) => {
+  try {
+    const { value, type } = req.query;
+    const topics = await search(value, type);
+    return res.status(200).send(topics);
   } catch (err) {
     return next(err);
   }
@@ -35,10 +46,11 @@ const listTopic = async (req, res, next) => {
 
 const updateTopic = async (req, res, next) => {
   try {
+    const { id } = req.params;
     const {
-      id, title, description, type, lecturerId,
+      title, description, limit, lecturerId, majorId,
     } = req.body;
-    await update(id, title, description, type, lecturerId);
+    await update(id, title, description, limit, lecturerId, majorId);
     return res.status(200).send('success');
   } catch (err) {
     return next(err);
@@ -47,7 +59,8 @@ const updateTopic = async (req, res, next) => {
 
 const deleteTopic = async (req, res, next) => {
   try {
-    const { id } = req.body;
+    console.log('he');
+    const { id } = req.params;
     await remove(id);
     return res.status(200).send('success');
   } catch (err) {
@@ -59,6 +72,7 @@ module.exports = {
   insertTopic,
   findOneTopic,
   listTopic,
+  searchTopic,
   updateTopic,
   deleteTopic,
 };

@@ -1,8 +1,41 @@
-GET http://localhost:5000/checkstatus
+GET {{host}}/check-status
 ###
-GET http://localhost:5000/v1/user HTTP/1.1
+
+GET {{host}}/v1/user
+Authorization: Bearer {{jwt_token}}
+###
+
+GET {{host}}/v1/user
+?roleId=636fb36d74302f3e88865872
+Authorization: Bearer {{jwt_token}}
+###
+
+GET {{host}}/v1/user/636fd51a841a040f5cece78f
+Authorization: Bearer {{jwt_token}}
+###
+
+PUT {{host}}/v1/user/636dbbc34489475518991d2a
+Authorization: Bearer {{jwt_token}}
 Content-Type: application/json
 
 {
-  "email": "lequocbao29072001@gmail.com"
+  "sex": "female",
+  "name": "Pham Quang Hung",
+  "email": "19110373@student.hcmute.edu.vn",
+  "code": "19110373@student.hcmute.edu.vn",
+  "picture": "https://lh3.googleusercontent.com/a/ALm5wu0Dfvn_Z7jfrXtPc456CxYUZzRb4CB5ImSezi3A=s96-c",
+  "role": "STUDENT"
+}
+###
+GET {{host}}/v1/profile
+Authorization: Bearer {{jwt_token}}
+###
+POST {{host}}/v1/profile
+Authorization: Bearer {{jwt_token}}
+Content-Type: application/json
+
+{
+  "sex": "female",
+  "name": "Pham Quang Hung",
+  "code": "19110373"
 }
