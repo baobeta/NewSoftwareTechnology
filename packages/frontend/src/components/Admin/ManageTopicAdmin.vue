@@ -2,7 +2,7 @@
 <template>
   <div class="flex">
     <div
-      class=" rounded ml-auto mr-4 my-2 bg-blue-800 text-white font-sans font-semibold py-2 px-4"
+      class="add-topic-admin rounded ml-auto mr-4 my-2 bg-blue-800 text-white font-sans font-semibold py-2 px-4"
       @click="modalShowAddTopicAdmin = true"
     >
       Thêm đề tài
