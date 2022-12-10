@@ -5,7 +5,8 @@ const mongoose = require('mongoose');
 // s
 
 // eslint-disable-next-line import/no-dynamic-require
-const { mongoUrl } = require(path.join(__dirname, '../../mongo_config'));
+// const { mongoUrl } = require(path.join(__dirname, '../../mongo_config'));
+const mongoUrl = 'mongodb://127.0.0.1:27017/dbtest';
 
 mongoose.set('useCreateIndex', true);
 mongoose.promise = global.Promise;
