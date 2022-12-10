@@ -1,6 +1,6 @@
 module.exports = {
   verbose: true,
-  testEnvironment: 'node',
+  testEnvironment: 'test',
   // setupFilesAfterEnv: ['./tests/utils/setup.js'],
   collectCoverage: true,
   collectCoverageFrom: [

@@ -5,8 +5,8 @@ const mongoose = require('mongoose');
 // s
 
 // eslint-disable-next-line import/no-dynamic-require
-// const { mongoUrl } = require(path.join(__dirname, '../../mongo_config'));
-const mongoUrl = 'mongodb://127.0.0.1:27017/dbtest';
+const { mongoUrl } = require(path.join(__dirname, '../../mongo_config'));
+// const mongoUrl = 'mongodb://127.0.0.1:27017/dbtest';
 
 mongoose.set('useCreateIndex', true);
 mongoose.promise = global.Promise;
@@ -31,7 +31,7 @@ async function dropAllCollections() {
       // This error occurs when you use it.todo. You can
       // safely ignore this error too
       if (error.message.includes('a background operation is currently running')) return;
-      console.log(error.message);
+      // console.log(error.message);
     }
   }
 }
@@ -40,7 +40,6 @@ module.exports = {
   setupDB() {
     // Connect to Mongoose
     beforeAll(async () => {
-      console.log(mongoUrl);
       await mongoose.connect(mongoUrl, { useNewUrlParser: true });
     });
 
