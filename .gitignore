@@ -11,7 +11,6 @@ node_modules
 dist
 dist-ssr
 *.local
-packages/frontend
 
 # Editor directories and files
 .vscode/*
@@ -24,16 +23,5 @@ packages/frontend
 *.sln
 *.sw?
 packages/frontend/yarn.lock
-packages/frontend/tests_output/nightwatch-html-report/images/arrows.svg
-packages/frontend/tests_output/nightwatch-html-report/js/bootstrap.min.js
-packages/frontend/tests_output/nightwatch-html-report/images/nightwatch-logo.svg
-packages/frontend/tests_output/nightwatch-html-report/images/badges.svg
-packages/frontend/tests_output/nightwatch-html-report/css/style.css
-packages/frontend/tests_output/nightwatch-html-report/css/bootstrap.min.css
-packages/frontend/tests_output/nightwatch-html-report/index.html
-packages/frontend/tests_output/login.test.xml
-packages/frontend/tests_output/login.test.json
-packages/frontend/tests_output/CHROME_106.0.5249.119__login.test.xml
-packages/frontend/tests_output/CHROME_106.0.5249.119__login.test.json
 packages/frontend/tests_output/nightwatch-html-report/js/bootstrap.min.js
 packages/frontend/tests_output

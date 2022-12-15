@@ -10,20 +10,26 @@ const { ObjectId } = mongoose.Types;
 
 setupDB();
 describe('user service', () => {
+  // beforeEach(() => {
+
+  // });
+  // afterAll(async () => {
+  //   _User.collection.drop();
+  // });
+
   test('insert user', async () => {
     jest.setTimeout(30000);
-    const id = await ObjectId();
-    const user = await insert('name test', 'lequocbao29072001@gmail.com', '19110', 'male', id, 'link_pic');
+    const user = await insert('aaa', 'bbb', 'male', 'lequocbao29072001@gmail.com');
     const check = await _User.findOne({ email: 'lequocbao29072001@gmail.com' });
     expect(user._id.toString()).toBe(check._id.toString());
   });
 
   test('update user', async () => {
-    const id = await ObjectId();
-    const user = await insert('name test', 'lequocbao29072001@gmail.com', '19110', 'male', id, 'link_pic');
-    await update(user._id, 'name test', 'lequocbao29072001@gmail.com', '19110test', 'male', id, 'link_pic');
+    jest.setTimeout(30000);
+    const user = await insert('aaa', 'bbb', 'male', 'lequocbao29072001@gmail.com');
+    await update(user._id, 'aaa', 'bbb', 'male', 'aaaa@gmail.com');
     const check = await _User.findOne({ _id: user._id });
-    expect(check.code.toString()).toBe('19110test');
+    expect(check.email.toString()).toBe('aaaa@gmail.com');
   });
 
   test('delete user', async () => {

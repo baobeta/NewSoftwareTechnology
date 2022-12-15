@@ -65,7 +65,7 @@ export default class RegisterApi {
   }
 
   static async deleteRegistration (token, registerId) {
-    const res = await axios.delete(`/registration/${registerId}`, {
+    const res = await axios.get(`/registration/${registerId}`, {
       headers: {
         authorization: `Bearer ${token}`,
       },

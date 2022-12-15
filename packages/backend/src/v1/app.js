@@ -1,16 +1,22 @@
+/* eslint-disable no-console */
 const bodyParser = require('body-parser');
 const express = require('express');
 const _ = require('lodash');
+const http = require('http');
+
+const { createSocket } = require('./socket');
+const { createRedis } = require('./redis');
 const AccessDenied = require('./utils/errors/AppError');
-const roleRoutes = require('./routes/role.route');
-const permissionsRoutes = require('./routes/permission.route');
-const userRoutes = require('./routes/user.route');
-const topicRoutes = require('./routes/topic.route');
-const majorRoutes = require('./routes/major.route');
 const authRoutes = require('./routes/auth.route');
-const registrationRoutes = require('./routes/registration.route');
+const userRoutes = require('./routes/user.route');
+const scheduleRoutes = require('./routes/schedule.route');
+const topicRoutes = require('./routes/topic.route');
+const taskRoutes = require('./routes/task.route');
 
 const app = express();
+const server = http.createServer(app);
+createSocket(server);
+createRedis();
 
 app.use(bodyParser.json());
 
@@ -27,16 +33,14 @@ app.use((req, res, next) => {
 });
 
 // add router
-roleRoutes(app);
-permissionsRoutes(app);
-userRoutes(app);
-topicRoutes(app);
-majorRoutes(app);
 authRoutes(app);
-registrationRoutes(app);
+userRoutes(app);
+scheduleRoutes(app);
+topicRoutes(app);
+taskRoutes(app);
 
 // handle error controller
-// need exactly 4 params for express to regconize
+// need exactly 4 params for express to recognize
 // http://expressjs.com/en/guide/error-handling.html#the-default-error-handler
 /* eslint-disable no-unused-vars */
 app.use((err, req, res, next) => {
@@ -53,4 +57,4 @@ app.use((err, req, res, next) => {
   }
 });
 
-module.exports = app;
+module.exports = server;

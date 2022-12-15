@@ -21,22 +21,20 @@ const getters = {
   isAuthenticated: (state) => state.isAuthenticated,
   userInfo: (state) => state.userInfo,
   token: (state) => state.userInfo.token,
-  userRole: (state) => state.userInfo.roleId.name,
+  userRole: (state) => state.userInfo.role,
   userName: (state) => state.userInfo.name,
 };
 
 const actions = {
   async signIn ({ commit, dispatch, rootState }, payload) {
     try {
-      const { access_token } = payload;
-      const res = await signInWithGoogle(access_token);
+      const { access_token, type } = payload;
+      const res = await signInWithGoogle(access_token, type);
       if (res.status === 200) {
         const { data } = res;
-        const { userInfo, accessToken } = data;
-        console.log(userInfo);
-        commit('setAuthenticated', { ...userInfo, token: accessToken });
+        const { userInfo, accessToken, role } = data;
+        commit('setAuthenticated', { ...userInfo, role, token: accessToken });
       } else {
-        console.log(e);
         // handle ui display error in UI
         console.log('Error in login');
       }

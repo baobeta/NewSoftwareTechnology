@@ -13,6 +13,15 @@ export default class TopicApi {
     return res.data;
   }
 
+  static async listAllTopicsByLecturerId (token, lecturerId) {
+    const res = await axios.get(`/topic?lecturerId=${lecturerId}`, {
+      headers: {
+        authorization: `bearer ${token}`,
+      },
+    });
+    return res.data;
+  }
+
   static async listTopicWithName (token, value, type) {
     const res = await axios.get(`/topic-search?value=${value}&type=${type}`, {
       headers: {
@@ -67,10 +76,8 @@ export default class TopicApi {
     return res.data;
   }
 
-  static async createTopic (token, title, description, limit, lecturerId, majorId) {
-    const res = await axios.post('/topic', {
-      title, description, limit, lecturerId, majorId,
-    }, {
+  static async createTopic (token, value) {
+    const res = await axios.post('/topic', value, {
       headers: {
         authorization: `Bearer ${token}`,
       },
@@ -78,10 +85,8 @@ export default class TopicApi {
     return res.data;
   }
 
-  static async updateTopicById (token, id, title, description, limit, lecturerId, majorId) {
-    const res = await axios.put(`/topic/${id}`, {
-      title, description, limit, lecturerId, majorId,
-    }, {
+  static async updateTopicById (token, value) {
+    const res = await axios.put(`/topic/${value._id}`, value, {
       headers: {
         authorization: `Bearer ${token}`,
       },
@@ -91,6 +96,51 @@ export default class TopicApi {
 
   static async deleteTopicById (token, id) {
     const res = await axios.delete(`/topic/${id}`, {
+      headers: {
+        authorization: `bearer ${token}`,
+      },
+    });
+    return res.data;
+  }
+
+  static async listTopicAcceptRegisters (token) {
+    const res = await axios.get('/topic-proposal/student', {
+      headers: {
+        authorization: `bearer ${token}`,
+      },
+    });
+    return res.data;
+  }
+
+  static async addRegisterTopic (token, id) {
+    const res = await axios.post(`/topic-student/${id}`, {}, {
+      headers: {
+        authorization: `bearer ${token}`,
+      },
+    });
+    return res.data;
+  }
+
+  static async removeRegisterTopicStudent (token, id) {
+    const res = await axios.delete(`/register/${id}`, {
+      headers: {
+        authorization: `bearer ${token}`,
+      },
+    });
+    return res.data;
+  }
+
+  static async getResultRegister (token) {
+    const res = await axios.get('/topic/student/result', {
+      headers: {
+        authorization: `bearer ${token}`,
+      },
+    });
+    return res.data;
+  }
+
+  static async listTopicMember (token, topicId) {
+    const res = await axios.get(`/topic/${topicId}/members`, {
       headers: {
         authorization: `bearer ${token}`,
       },

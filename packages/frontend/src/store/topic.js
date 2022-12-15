@@ -1,38 +1,87 @@
-const topicEmpty = {
-  _id: null,
-  title: null,
-  description: null,
-  limit: null,
-  lecturerId: {
-    _id: null,
-  },
-  majorId: {
-    _id: null,
-  },
-};
+import TopicApi from '../utils/api/topic';
 
 const initState = {
-  currentTopic: topicEmpty,
+  listTopics: [],
+  listTopicByLecturer: [],
+  listTopicByStudent: [],
+  topicResult: null,
 };
 
 const getters = {
-  currentTopic: (state) => state.currentTopic._id,
+  listTopics: (state) => state.listTopics,
+  listTopicByStudent: (state) => state.listTopicByStudent,
 };
 
 const actions = {
-  updateTopic ({ commit, dispatch, rootState }, payload) {
+  async fetchListTopics ({ commit }, token) {
+    const listTopics = await TopicApi.listAllTopics(token);
+    commit('setListTopics', listTopics);
+  },
+  async fetchListTopicByStudent ({ commit }, token) {
+    const listTopics = await TopicApi.listTopicAcceptRegisters(token);
+    commit('setListTopicsByStudent', listTopics);
+  },
+  async fetchListTopicByLectures ({ commit }, value) {
+    const { token, lecturerId } = value;
+    const listTopics = await TopicApi.listAllTopicsByLecturerId(token, lecturerId);
+    commit('setListTopicsByLecturer', listTopics);
+  },
+
+  async fetchTopicResult ({ commit }, token) {
+    const topic = await TopicApi.getResultRegister(token);
+    commit('setTopicResult', topic);
+  },
+
+  async addTopic ({ dispatch }, payload) {
     try {
-      commit('setTopic', payload);
+      const { token, value } = payload;
+      await TopicApi.createTopic(token, value);
+      dispatch('fetchListTopics', token);
     } catch (e) {
-      // handle ui display error in UI
-      console.log('Error in login');
+      throw new Error(e.message);
     }
+  },
+  async updateTopic ({ dispatch, commit }, payload) {
+    try {
+      const { token, value } = payload;
+      await TopicApi.updateTopicById(token, value);
+      dispatch('fetchListTopics', token);
+    } catch (e) {
+      throw new Error(e.message);
+    }
+  },
+  async removeTopic ({ dispatch, commit }, value) {
+    const { token, id } = value;
+    await TopicApi.deleteTopicById(token, id);
+    dispatch('fetchListTopics', token);
+  },
+  async addRegisterTopic ({ dispatch, commit }, value) {
+    const { token, id } = value;
+    await TopicApi.addRegisterTopic(token, id);
+    dispatch('fetchListTopicByStudent', token);
+  },
+
+  async removeRegisterTopicStudent ({ dispatch, commit }, value) {
+    const { token, id } = value;
+    await TopicApi.removeRegisterTopicStudent(token, id);
+    dispatch('fetchTopicResult', token);
+    dispatch('fetchListTopicByStudent', token);
+    dispatch('fetchListTopics', token);
   },
 };
 
 const mutations = {
-  setTopic: (state, topic) => {
-    state.currentTopic = topic;
+  setListTopics: (state, listTopics) => {
+    state.listTopics = listTopics;
+  },
+  setListTopicsByLecturer: (state, listTopicByLecturer) => {
+    state.listTopicByLecturer = listTopicByLecturer;
+  },
+  setListTopicsByStudent: (state, listTopicByStudent) => {
+    state.listTopicByStudent = listTopicByStudent;
+  },
+  setTopicResult: (state, topicResult) => {
+    state.topicResult = topicResult;
   },
 };
 

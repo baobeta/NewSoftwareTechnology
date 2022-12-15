@@ -1,18 +1,20 @@
+const fs = require('fs');
 const {
-  list,
-  findOne,
-  update,
   viewProfile,
-  editProfile,
-  remove,
-  insert,
+  addOneUser,
+  listUserByType,
+  findOneByCode,
+  updateOneByCode,
+  importUser,
 } = require('../controller/user.controller');
 
-const authMiddleware = require('../middlewares/auth.middlewares');
-const roleMiddleware = require('../middlewares/role.middlewares');
+const { upload } = require('../utils/file');
+
+const authMiddleware = require('../middlewares/auth.middleware');
+// const roleMiddleware = require('../middlewares/role.middlewares');
 
 const { isAuth } = authMiddleware;
-const { permit } = roleMiddleware;
+// const { permit } = roleMiddleware;
 
 const router = (app) => {
   app.get('/check-status', (req, res) => {
@@ -21,14 +23,23 @@ const router = (app) => {
       message: 'api ok',
     });
   });
-  app.get('/v1/user', isAuth, list);
-  app.post('/v1/user', isAuth, insert);
-  app.get('/v1/user/:id', findOne);
-  app.put('/v1/user/:id', isAuth, update);
 
+  app.post('/v1/user', isAuth, addOneUser); // only admin
+  app.get('/v1/user/', isAuth, listUserByType);
+  app.get('/v1/user/:code', isAuth, findOneByCode);
+  app.put('/v1/user/:code', isAuth, updateOneByCode);
   app.get('/v1/profile', isAuth, viewProfile);
-  app.post('/v1/profile', isAuth, editProfile);
-  app.delete('/v1/user/:id', isAuth, remove);
+
+  app.get('/template/User', (req, res) => {
+    const file = fs.createReadStream('public/template/UserTemplate.xlsx');
+    const stat = fs.statSync('public/template/UserTemplate.xlsx');
+    res.setHeader('Content-Length', stat.size);
+    res.setHeader('Content-Type', 'application/xml');
+    res.setHeader('Content-Disposition', 'attachment; filename=User.xlsx');
+    file.pipe(res);
+  });
+
+  app.post('/v1/user-import/', upload.single('xlsx'), importUser);
 };
 
 module.exports = router;
